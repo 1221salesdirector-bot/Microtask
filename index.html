@@ -1,34 +1,101 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>MicroTask</title>
+<title>MicroTask - Earn Real Money</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <style>
-body{font-family:Arial;background:linear-gradient(135deg,#667eea,#764ba2);padding:10px;margin:0;min-height:100vh;color:white}
-.c{max-width:500px;margin:0 auto}
+body{font-family:Arial;background:#667eea;padding:10px;color:white}
 .bal{background:#4F46E5;border-radius:15px;padding:20px;text-align:center;margin:15px 0}
 .bal h2{font-size:2.5em;margin:10px 0}
 .task{background:white;color:black;padding:15px;margin:10px 0;border-radius:10px;border-left:5px solid #4F46E5}
 .rew{color:#10B981;font-size:1.5em;font-weight:bold}
-.btn{width:100%;padding:15px;background:#10B981;color:white;border:none;border-radius:10px;font-size:18px;font-weight:bold;cursor:pointer;margin:8px 0}
+.btn{width:100%;padding:15px;background:#10B981;color:white;border:none;border-radius:10px;font-size:18px;font-weight:bold;cursor:pointer;margin:5px 0}
+.paypal-btn{background:#0070BA}
+input,textarea{width:100%;padding:12px;margin:8px 0;border:2px solid #ddd;border-radius:8px;font-size:16px;box-sizing:border-box}
+.card{background:white;color:black;border-radius:15px;padding:20px;margin:15px 0}
+.hidden{display:none}
 </style>
 </head>
 <body>
-<div class="c">
+<div style="max-width:500px;margin:0 auto">
+
 <h1 style="text-align:center">💰 MicroTask</h1>
+
+<div id="dash">
 <div class="bal">
 <p>Your Balance</p>
 <h2 id="b">$0.00</h2>
-<p>Tasks: <span id="t">0</span> | Fees: $<span id="f">0.00</span></p>
+<p>Tasks: <span id="t">0</span></p>
 </div>
+
+<button class="btn paypal-btn" onclick="showWithdraw()">💳 Cash Out via PayPal</button>
+
 <h3>Available Tasks</h3>
 <div id="l"></div>
 </div>
+
+<div id="withdraw" class="hidden">
+<div class="card">
+<h2>💳 Cash Out to PayPal</h2>
+<p>Your Balance: <strong id="wb">$0.00</strong></p>
+<input type="email" id="paypalEmail" placeholder="Your PayPal email">
+<input type="number" id="amount" placeholder="Amount to withdraw (min $5)">
+<button class="btn paypal-btn" onclick="withdraw()">Request Payout</button>
+<button class="btn" onclick="goBack()">⬅ Back to Tasks</button>
+<p style="color:#666;font-size:13px;margin-top:10px">Payouts processed within 24 hours to your PayPal</p>
+</div>
+</div>
+
+</div>
+
 <script>
-let B=0,T=0,F=0;
-let ts=[{id:1,ti:'📝 Data Entry',de:'Enter product data',rw:8},{id:2,ti:'🎙️ Transcribe Audio',de:'Transcribe 5-min audio',rw:12},{id:3,ti:'📱 Test Website',de:'Test and give feedback',rw:10},{id:4,ti:'🔍 Research',de:'Find social media accounts',rw:6},{id:5,ti:'✍️ Write Article',de:'Write 500-word article',rw:15}];
-function load(){document.getElementById('l').innerHTML=ts.map(t=>'<div class="task"><div class="rew">$'+t.rw.toFixed(2)+'</div><h3>'+t.ti+'</h3><p>'+t.de+'</p><button class="btn" onclick="done('+t.id+')">Earn $'+(t.rw*0.9).toFixed(2)+'</button></div>').join('')}
-function done(id){let t=ts.find(x=>x.id===id);let fee=+(t.rw*0.1).toFixed(2),earn=+(t.rw-fee).toFixed(2);B=+(B+earn).toFixed(2);T++;F=+(F+fee).toFixed(2);document.getElementById('b').textContent='$'+B.toFixed(2);document.getElementById('t').textContent=T;document.getElementById('f').textContent=F.toFixed(2);alert('💰 You earned $'+earn+'! Fee: $'+fee)}
+let B=0,T=0;
+let ts=[
+{id:1,ti:'📝 Data Entry',de:'Enter product data into spreadsheet',rw:8},
+{id:2,ti:'🎙️ Transcribe Audio',de:'Transcribe 5-min audio file',rw:12},
+{id:3,ti:'📱 Test Website',de:'Test website and give feedback',rw:10},
+{id:4,ti:'🔍 Research',de:'Find social media accounts',rw:6},
+{id:5,ti:'✍️ Write Article',de:'Write 500-word article',rw:15}
+];
+
+function load(){
+document.getElementById('l').innerHTML=ts.map(t=>
+'<div class="task"><div class="rew">$'+t.rw.toFixed(2)+'</div><h3>'+t.ti+'</h3><p>'+t.de+'</p><button class="btn" onclick="done('+t.id+')">Earn $'+(t.rw*0.9).toFixed(2)+'</button></div>'
+).join('')
+}
+
+function done(id){
+let t=ts.find(x=>x.id===id);
+let earn=+(t.rw*0.9).toFixed(2);
+B=+(B+earn).toFixed(2);T++;
+document.getElementById('b').textContent='$'+B.toFixed(2);
+document.getElementById('t').textContent=T;
+alert('💰 You earned $'+earn+'!')
+}
+
+function showWithdraw(){
+document.getElementById('dash').classList.add('hidden');
+document.getElementById('withdraw').classList.remove('hidden');
+document.getElementById('wb').textContent='$'+B.toFixed(2);
+}
+
+function goBack(){
+document.getElementById('withdraw').classList.add('hidden');
+document.getElementById('dash').classList.remove('hidden');
+}
+
+function withdraw(){
+let email=document.getElementById('paypalEmail').value;
+let amount=parseFloat(document.getElementById('amount').value);
+if(!email||!amount)return alert('Please fill all fields');
+if(amount>B)return alert('Insufficient balance');
+if(amount<5)return alert('Minimum withdrawal is $5');
+alert('✅ Payout request sent!\n\n$'+amount.toFixed(2)+' will be sent to '+email+'\n\nYour payment will be processed within 24 hours.');
+B=+(B-amount).toFixed(2);
+document.getElementById('b').textContent='$'+B.toFixed(2);
+goBack();
+}
+
 load()
 </script>
 </body>
