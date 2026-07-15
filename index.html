@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MicroTask</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<style>
+body{font-family:Arial;background:linear-gradient(135deg,#667eea,#764ba2);padding:10px;margin:0;min-height:100vh;color:white}
+.c{max-width:500px;margin:0 auto}
+.bal{background:#4F46E5;border-radius:15px;padding:20px;text-align:center;margin:15px 0}
+.bal h2{font-size:2.5em;margin:10px 0}
+.task{background:white;color:black;padding:15px;margin:10px 0;border-radius:10px;border-left:5px solid #4F46E5}
+.rew{color:#10B981;font-size:1.5em;font-weight:bold}
+.btn{width:100%;padding:15px;background:#10B981;color:white;border:none;border-radius:10px;font-size:18px;font-weight:bold;cursor:pointer;margin:8px 0}
+</style>
+</head>
+<body>
+<div class="c">
+<h1 style="text-align:center">💰 MicroTask</h1>
+<div class="bal">
+<p>Your Balance</p>
+<h2 id="b">$0.00</h2>
+<p>Tasks: <span id="t">0</span> | Fees: $<span id="f">0.00</span></p>
+</div>
+<h3>Available Tasks</h3>
+<div id="l"></div>
+</div>
+<script>
+let B=0,T=0,F=0;
+let ts=[{id:1,ti:'📝 Data Entry',de:'Enter product data',rw:8},{id:2,ti:'🎙️ Transcribe Audio',de:'Transcribe 5-min audio',rw:12},{id:3,ti:'📱 Test Website',de:'Test and give feedback',rw:10},{id:4,ti:'🔍 Research',de:'Find social media accounts',rw:6},{id:5,ti:'✍️ Write Article',de:'Write 500-word article',rw:15}];
+function load(){document.getElementById('l').innerHTML=ts.map(t=>'<div class="task"><div class="rew">$'+t.rw.toFixed(2)+'</div><h3>'+t.ti+'</h3><p>'+t.de+'</p><button class="btn" onclick="done('+t.id+')">Earn $'+(t.rw*0.9).toFixed(2)+'</button></div>').join('')}
+function done(id){let t=ts.find(x=>x.id===id);let fee=+(t.rw*0.1).toFixed(2),earn=+(t.rw-fee).toFixed(2);B=+(B+earn).toFixed(2);T++;F=+(F+fee).toFixed(2);document.getElementById('b').textContent='$'+B.toFixed(2);document.getElementById('t').textContent=T;document.getElementById('f').textContent=F.toFixed(2);alert('💰 You earned $'+earn+'! Fee: $'+fee)}
+load()
+</script>
+</body>
+</html>
